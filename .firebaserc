@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "mypropertiesapp-361fc": {
+      "hosting": {
+        "my-properties-app": [
+          "mypropertiesapp-361fc"
+        ]
+      }
+    }
+  }
+}
