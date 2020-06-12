@@ -1,4 +1,4 @@
-<!-- <app-header pageTitle="Sign Up" ></app-header>
+
 <mat-card [@fallIn]='state' *ngIf="!savedChanges else showSavedChangesCard">
   <form #formData='ngForm' (ngSubmit)="onSubmit(formData)">
     <mat-card-content>
@@ -13,11 +13,13 @@
         <mat-error>User ID is already taken.</mat-error>
       </mat-card-actions>
       <div *ngIf="dataLoading">
-        <mat-progress-spinner mode="indeterminate" [attr.color]="primary" [value]="15"></mat-progress-spinner>
+        <mat-progress-bar mode="indeterminate" *ngIf="dataLoading"></mat-progress-bar>
+
+        <!-- <mat-progress-spinner mode="indeterminate" [attr.color]="primary" [value]="15"></mat-progress-spinner> -->
       </div>
       <div *ngIf="brokenNetwork" class="label-error">Network connection error.</div>
       <mat-card-actions align="start">
-        <button type="submit" [disabled]="!formData.valid" mat-raised-button color="primary">Log in</button>
+        <button type="submit" [disabled]="!formData.valid" mat-raised-button color="primary">Sign up</button>
       </mat-card-actions>
       <mat-form-field class="example-full-width">
         <input matInput placeholder="email" name="email" #email="ngModel" ngModel required email>
@@ -51,6 +53,5 @@
     <button type="button" (click)="savedChanges=false;routeLoginPage();" mat-raised-button color="primary">Close</button>
   </mat-card-actions>
 </ng-template>
-<footer></footer> -->
+<footer></footer>
 
-<p>sign up</p>

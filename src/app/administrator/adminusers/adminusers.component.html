@@ -1,1 +1,128 @@
-<p>adminusers works!</p>
+<!-- <button (click) = "add()">ADD</button>
+
+<div *ngFor ="let item of items">
+    {{item.category}}
+    <button (click) = "update(item)">UpDate</button>
+    <button (click) = "delete(item)">Delete</button>
+
+
+
+</div> -->
+
+
+
+<div class="container">
+
+    <div class="form-group">
+        <input type="text" class="form-control" [(ngModel)]="employeeName" placeholder="Enter Employee Name">
+    </div>
+    <div class="form-group">
+        <input type="number" class="form-control" [(ngModel)]="employeeAge" placeholder="Enter Employee Age">
+    </div>
+    <div class="form-group">
+        <input type="text" class="form-control" [(ngModel)]="employeeAddress" placeholder="Enter Employee Address">
+    </div>
+    
+    <!-- pic -->
+    <!-- <button mat-icon-button matTooltip="Show Picture" 
+        (click)=" this.showHostSelfie=true;">
+        <mat-icon color="primary">photo_camera</mat-icon>
+    </button> -->
+
+    <!-- <button mat-icon-button matTooltip="Take Picture" (click)=" this.takeHostSelfie=true;"
+        class="label-error"  >
+        <mat-icon color = "primary">photo_camera</mat-icon>
+    </button>
+    <div *ngIf="takeHostSelfie" width="300">
+        <button type="reset" (click)="takeHostSelfie=false;" mat-icon-button color="primary">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <br>
+        <fileupload fileUrl="product" docId="{{this.myDocId}}"></fileupload>
+    </div>
+    <div *ngIf="showHostSelfie" width="300">
+        <button type="reset" (click)="showHostSelfie=false;" mat-icon-button color="primary">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <br>
+        <img [src]="profileUrl | async" width="300" height="300" />
+        <br>
+    </div> -->
+    <div class="form-group">
+        <button class="btn btn-primary" (click)="CreateRecord()" color="primary" mat-raised-button
+            [disabled]="!employeeName || !employeeAge || !employeeAddress">Create Employee</button>
+    </div>
+    <div class="form-group">
+        <h4><b>{{message}}</b></h4>
+    </div>
+
+    <div class="row p-2">
+        <div class="col-md-12 p-2 justify-content-center">
+            <h4>All Employee Data</h4>
+        </div>
+
+        <div class="col-md-3" *ngFor="let item of employee">
+
+            <div class="card" *ngIf="!item.isedit; else elseBlock">
+                <div class="card-body">
+                    <div class="card-title">
+                        Name: {{item.name}}
+                    </div>
+                    <div class="card-subtitle">
+                        Age: {{item.age}}
+                    </div>
+                    <div class="card-text">
+                        Address: {{item.address}}
+                    </div>
+                    <span>
+                        <!-- <a href="#" (click)="EditRecord(item)" class="btn btn-primary btn-xs" color="primary">Edit
+                            Employee</a> -->
+
+                        <!-- <a href="#" (click)="Deleteemployee(item.id)" class="btn btn-danger btn-xs"
+                            color="primary">Delete Employee</a> -->
+                        <button (click)="EditRecord(item)" class="btn btn-primary btn-xs ">Edit
+                            Employee</button>
+                        <button (click)="Deleteemployee(item.id)" class="btn btn-danger btn-xs">Delete Employee</button>
+                    </span>
+                </div>
+            </div>
+
+            <ng-template #elseBlock>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">
+                            Edit Employee
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" [(ngModel)]="item.editname" class="form-control">
+                                </div>
+                                <div class="col-md-12">
+                                    <input type="number" [(ngModel)]="item.editage" class="form-control">
+                                </div>
+                                <div class="col-md-12">
+                                    <input type="text" [(ngModel)]="item.editaddress" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <a href="#" class="btn btn-danger btn-xs" (click)="item.isedit = false">Cancel</a> -->
+                        <!-- <a href="#" class="btn btn-primary btn-xs" (click)="Updatarecord(item)">Update Employee</a> -->
+                        <button class="btn btn-danger btn-xs" (click)="item.isedit = false">Cancel</button>
+                        <button class="btn btn-primary btn-xs" (click)="Updatarecord(item)">Update Employee</button>
+
+
+
+                    </div>
+                </div>
+            </ng-template>
+
+
+
+        </div>
+    </div>
+
+
+</div>
+<app-footer></app-footer>

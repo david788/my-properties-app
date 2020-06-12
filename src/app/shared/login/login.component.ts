@@ -12,9 +12,8 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   userloggedin: boolean = true;
   error: any;
-  dataLoading: boolean = true;
+  dataLoading: boolean = false;
   brokenNetwork = false;
-  // constructor( private _backendservice: BackendService) { }
   constructor(public afAuth: AngularFireAuth, private _router: Router, private _backendservice: BackendService) { }
 
 
@@ -22,35 +21,34 @@ export class LoginComponent implements OnInit {
     // this.userloggedin =true;
     this.getAuthStatus();
   }
-  getAuthStatus(){
-    this._backendservice.redirectLogin().then(function(result) {
+
+//login function declared here
+  login(loginType, formData?) {
+    this.dataLoading=true;
+    this._backendservice.login(loginType, formData);
+  
+  }
+  //logout function declared here
+  logout() {
+    this.dataLoading = true;
+    return this._backendservice.logout().then((success) => {
+      this.userloggedin = false;
+      this.dataLoading = false;
+    })
+  }
+  //authstatus gotten here
+  getAuthStatus() {
+    this._backendservice.redirectLogin().then(function (result) {
       if (result.credential) {
-        window.localStorage.setItem("displayName",result.user.displayName);
-        window.localStorage.setItem("email",result.user.email);
-        window.localStorage.setItem("picture",result.user.photoURL);
+        window.localStorage.setItem("displayName", result.user.displayName);
+        window.localStorage.setItem("email", result.user.email);
+        window.localStorage.setItem("picture", result.user.photoURL);
         this.isLoggedIn = true;
       }
     }).catch(
       (err) => {
         this.error = err;
       })
-  }
-  login(loginType, formData?) {
-    this._backendservice.login(loginType, formData);
-    /**
-    .then(
-      (success) => {
-        if(formData) {
-          window.localStorage.setItem("email",formData.email);
-        }
-        //console.log(success);
-        this._router.navigate(['/settings']);
-      }).catch(
-      (err) => {
-        this.error = err;
-      })
-    ;
-     */
   }
 
 }

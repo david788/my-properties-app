@@ -85,7 +85,7 @@ export class AdmincartsComponent implements OnInit, OnDestroy {
   }
   setData(formData) {
     this.dataLoading = true;
-    this.querySubscription = this._backendService.setProducts('cart', formData)
+    this.querySubscription = this._backendService.getProducts('cart', )
       .subscribe(members => {
         if (members) {
           this.savedChanges = true;
@@ -101,22 +101,38 @@ export class AdmincartsComponent implements OnInit, OnDestroy {
       );
   }
   updateData(formData) {
-    this.dataLoading = true;
-    this.querySubscription = this._backendService.updateProducts('cart', formData)
-      .subscribe(members => {
-        if (members) {
-          this.savedChanges = true;
-          this.dataLoading=false;
+    formData.tags = formData.tags.split(',');
+    if (confirm("Are you sure want to update this record ?")) {
+        this.dataLoading = true;
+        this._backendService.updateProduct('cart', formData).then((res) => {
+            this.error = false;
+            this.errorMessage = "";
+            this.dataLoading = false;
+            this.savedChanges = true;
+        }).catch(error => {
+            this.error = true;
+            this.errorMessage = error.message;
+            this.dataLoading = false;
+        });
+    }
+}
+  // updateData(formData) {
+  //   this.dataLoading = true;
+  //   this.querySubscription = this._backendService.updateProduct('cart', formData)
+  //     .subscribe(members => {
+  //       if (members) {
+  //         this.savedChanges = true;
+  //         this.dataLoading=false;
 
-        }
-      }, (error) => {
-        this.error = true;
-        this.errorMessage = error.message;
-        this.dataLoading = false;
-      },
-        () => { this.error = false; this.dataLoading = false; }
-      );
-  }
+  //       }
+  //     }, (error) => {
+  //       this.error = true;
+  //       this.errorMessage = error.message;
+  //       this.dataLoading = false;
+  //     },
+  //       () => { this.error = false; this.dataLoading = false; }
+  //     );
+  // }
   getPic(picId) { }
   deleteProductPic(docId) { }
   getDoc(docId) {

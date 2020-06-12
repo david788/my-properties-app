@@ -1,6 +1,6 @@
 <!-- <app-header pageTitle="SignIn" imageUrl="account_circle" ></app-header> -->
 <mat-toolbar color="primary">
-  SignIn
+VYSA
 </mat-toolbar>
 <mat-card>
   <mat-card-header>
@@ -9,10 +9,12 @@
     </mat-card-title>
     <mat-card-subtitle>Where Shop Meets You at Your Comfort </mat-card-subtitle>
   </mat-card-header>
-  <div *ngIf="afAuth.user | async as user; else showShopping">
+  <div *ngIf="afAuth.user | async as user; else showLogin">
     <button type="button" routerLink="/product" mat-raised-button color="primary">Continue Shopping</button>
+    <button type="button" (click)="logout();" mat-raised-button color="primary">Log out</button>
+
   </div>
-  <ng-template #showShopping>
+  <ng-template #showLogin>
     <mat-card-content>
       <mat-divider></mat-divider>
       <form #formData="ngForm" (ngSubmit)="login('email',formData.value)" class="example-form">
@@ -61,7 +63,7 @@
         No account?
         <strong>Create one with your email here</strong>
       </button>
-      
+
     </mat-card-actions>
   </ng-template>
 

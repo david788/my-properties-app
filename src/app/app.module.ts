@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule } from '@angular/material/slider';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
@@ -32,6 +32,9 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 
 
 import { environment } from '../environments/environment';
+import { FileUploadComponent } from './shared/dropzone/fileupload.component';
+import { DropZoneDirective } from './shared/dropzone/dropzone.directive';
+import { FileSizePipe } from './shared/dropzone/filesize.pipe';
 // import { AngularFireAuthModule } from '@angular/fire/auth/auth.module';
 
 
@@ -52,7 +55,10 @@ import { environment } from '../environments/environment';
     LoginComponent,
     ProductComponent,
     UserComponent,
-    CartsComponent
+    CartsComponent,
+    FileUploadComponent,
+    DropZoneDirective,
+    FileSizePipe
 
    
   ],
@@ -60,6 +66,7 @@ import { environment } from '../environments/environment';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    NoopAnimationsModule,
     MatSliderModule,
     CustommaterialModule,
     HttpClientModule,
