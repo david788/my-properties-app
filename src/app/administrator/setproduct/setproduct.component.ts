@@ -169,12 +169,12 @@ export class SetproductComponent implements OnInit, OnDestroy {
   }
   deleteProductPic(docId) {
     if (confirm("Are you sure want to delete this picture ?")) {
-      this._backendService.deleteProductPic('product', docId);
+      this._backendService.deleteProductPic( docId);
     }
   }
   getDoc(docId) {
     this.dataLoading = true;
-    this.querySubscription = this._backendService.getProduct('product', docId)
+    this.querySubscription = this._backendService.getProduct( docId)
       .subscribe(res => {
         if (res) {
           this.myDocData = res;

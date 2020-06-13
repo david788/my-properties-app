@@ -12,6 +12,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 export class ProductComponent implements OnInit {
   members: Observable<any>;
+  // products: any;
+
   items = [];
   dataSource: MatTableDataSource<any>;
   myDocData;
@@ -31,9 +33,9 @@ export class ProductComponent implements OnInit {
   takeHostSelfie = false;
   showHostSelfie = false;
   myDocId;
-  
+
   counter = 0;
-  constructor(private db: AngularFirestore ,private _backendService: BackendService, private _storage: AngularFireStorage) { }
+  constructor(private db: AngularFirestore, public crudservice: BackendService, private _backendService: BackendService, private _storage: AngularFireStorage) { }
 
   ngOnInit(): void {
     this.getData();
@@ -48,8 +50,39 @@ export class ProductComponent implements OnInit {
     //     });
     //   }
     // );
+
+    // this.crudservice.getProductsNew().subscribe(data => {
+
+    //   this.products = data.map(e => {
+    //     return {
+    //       id: e.payload.doc.id,
+    //       isedit: false,
+    //       category: e.payload.doc.data()['category'],
+    //       scategory: e.payload.doc.data()['scategory'],
+    //       name: e.payload.doc.data()['name'],
+    //       sname: e.payload.doc.data()['sname'],
+
+    //       lname: e.payload.doc.data()['lname'],
+
+    //       descr: e.payload.doc.data()['descr'],
+
+    //       color: e.payload.doc.data()['color'],
+
+    //       size: e.payload.doc.data()['size'],
+    //       price: e.payload.doc.data()['price'],
+
+    //       shipping: e.payload.doc.data()['shipping'],
+
+    //       discount: e.payload.doc.data()['discount'],
+
+
+    //     };
+    //   })
+    //   console.log(this.products);
+
+    // });
   }
- 
+
   getData() {
     this.members = this._backendService.getProducts('product');
   }
@@ -63,14 +96,14 @@ export class ProductComponent implements OnInit {
   setData(formData) {
     this.dataLoading = true;
     this._backendService.setProduct('product', formData).then((res) => {
-        this.savedChanges = true;
-        this.dataLoading = false;
+      this.savedChanges = true;
+      this.dataLoading = false;
     }).catch(error => {
-        this.error = true;
-        this.errorMessage = error.message;
-        this.dataLoading = false;
+      this.error = true;
+      this.errorMessage = error.message;
+      this.dataLoading = false;
     });
-}
+  }
   getPic(picId) {
     const ref = this._storage.ref(picId);
     this.profileUrl = ref.getDownloadURL();
@@ -110,7 +143,7 @@ export class ProductComponent implements OnInit {
       this.querySubscription.unsubscribe();
     }
   }
-   // getData() {
+  // getData() {
   //   this.dataLoading = true;
   //   this.querySubscription = this._backendService.getProducts('product')
   //     .subscribe(members => {

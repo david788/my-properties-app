@@ -17,13 +17,15 @@
     </mat-card-actions>
 
     <mat-card-content *ngIf="toggle else showProductDetails">
+       
         <mat-list>
-            <!-- <mat-list-item *ngFor="let item of members | async" (click)="showDetails(item);toggle=!toggle"> -->
-            <mat-list-item *ngFor="let item of members" (click)=" showDetails(item);toggle=!toggle">
+            <mat-list-item *ngFor="let item of members | async" (click)="showDetails(item);toggle=!toggle">
+                <!-- <mat-list-item *ngFor="let item of members" (click)=" showDetails(item);toggle=!toggle"> -->
 
-                <h5 mat-line>{{item.name}}
+                <h6 mat-line>{{item.name}}
+                    <span class="small-spacer"></span>
                     <mat-icon mat-list-icon>pageview</mat-icon>
-                </h5>
+                </h6>
                 <p class="label-hint" mat-line> {{item.category }} / {{item.scategory }}</p>
             </mat-list-item>
         </mat-list>

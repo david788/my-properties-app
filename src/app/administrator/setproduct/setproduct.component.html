@@ -135,7 +135,7 @@
             <mat-error *ngIf="error">Error: {{ errorMessage }}</mat-error>
             <mat-card-actions align="start">
                 <button type="submit" mat-raised-button
-                    [disabled]="this.editDataForm.valid || this.editDataForm.pristine" color="primary">Update</button>
+                    ="this.editDataForm.valid || this.editDataForm.pristine" color="primary" >Update</button>
                 <span class="med-spacer"></span>
                 <span matTooltip="Search">
                     <mat-icon color="primary" (click)="toggle('searchMode')">search</mat-icon>

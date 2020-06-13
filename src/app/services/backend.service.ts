@@ -40,23 +40,7 @@ export class BackendService {
     });
   }
   //amit new
-  getDocsNew(filters?: any) {
-    this.nameFilter$ = new BehaviorSubject(null);
-    this.rollNoFilter$ = new BehaviorSubject(null);
-
-    return this.items$ = Observable.combineLatest(
-      this.nameFilter$,
-      this.rollNoFilter$
-    ).switchMap(
-      ([STD_NM, ROLLNO]) =>
-      this.afs.collection<Item>(this._firebaseCollURL, ref => {
-        let query = ref.where('delete_flag', '==', 'N');
-        if (STD_NM) { query = ref.where('STD_NM', '>=', STD_NM);query = query.orderBy('STD_NM', 'desc'); };
-        if (ROLLNO) { query = ref.where('ROLLNO', '>=', ROLLNO);query = query.orderBy('ROLLNO', 'desc'); };
-        return query;
-      }).valueChanges()
-    );
-}
+  
 
 getDocsByName(STD_NM: string|null) {
   this.nameFilter$.next(STD_NM); 
@@ -66,10 +50,7 @@ getDocsByRollNo(ROLLNO: string|null) {
   this.rollNoFilter$.next(ROLLNO); 
   return this.items$
 }
-deleteOneProduct(  record_id)
-  {
-    this.fireservices.doc('product/' + record_id).delete();
-  }
+
   //end
 
   create_Newemployee(Record)
@@ -80,6 +61,10 @@ deleteOneProduct(  record_id)
   get_Allemployee()
   {
     return this.fireservices.collection('Employee').snapshotChanges();
+  }
+  getProductsNew(){
+    return this.fireservices.collection('product').snapshotChanges();
+
   }
 
   update_employee(recordid, record)
@@ -145,9 +130,7 @@ deleteOneProduct(  record_id)
   //   this.itemDoc = this.afs.doc<any>(collUrl);
   //   return this.itemDoc.valueChanges();
   // }
-  getDoc(coll: string, docId: string) {
-    return this.afs.collection(coll).doc(docId).valueChanges();
-  }
+  
 
   get timestamp() {
     var d = new Date();
@@ -159,7 +142,7 @@ deleteOneProduct(  record_id)
 
   //CREATE
   setProduct(coll: string, formData: any, docId?: string) {
-    coll = this._eStoreColl + "/" + localStorage.getItem('center') + "/" + coll;
+    // coll = this._eStoreColl + "/" + localStorage.getItem('center') + "/" + coll;
     return this.setNewDoc(coll, formData);
 }
    setNewDoc(coll: string, data: any, docId?: any) {
@@ -178,22 +161,48 @@ deleteOneProduct(  record_id)
       useremail: this.authState.email
     });
   }
-  //image picker function
-  // setProductPic(filePath, coll, docId?) {
-  //   coll = this._eStoreColl + "/" + localStorage.getItem('center') + "/" + coll;
-  //   var docRef = this.afs.collection(coll).doc(docId);
-  //   return docRef.set({
-  //     path: filePath
-  //   }, { merge: true });
-  // }
+ //the function to upload a pic for a single document
   setProductPic(filePath, coll, docId?) {
-    var docRef = this.afs.collection(this.getCollectionUrl(coll)).doc(docId);
+    var docRef = this.afs.collection('product').doc(docId);
     return docRef.set({
       path: filePath
     }, { merge: true });
   }
 
   //READ
+
+  //function to get a single document
+  getProduct( docId: string) {
+    return this.getDoc(docId);
+  }
+  getDoc( docId: string) {
+    return this.afs.collection('product').doc(docId).valueChanges();
+  }
+  //function to get collection documents and display on a table
+  getDocsNew(filters?: any) {
+    this.nameFilter$ = new BehaviorSubject(null);
+    this.rollNoFilter$ = new BehaviorSubject(null);
+
+    return this.items$ = Observable.combineLatest(
+      this.nameFilter$,
+      this.rollNoFilter$
+    ).switchMap(
+      ([STD_NM, ROLLNO]) =>
+      this.afs.collection<Item>(this._firebaseCollURL, ref => {
+        let query = ref.where('delete_flag', '==', 'N');
+        if (STD_NM) { query = ref.where('STD_NM', '>=', STD_NM);query = query.orderBy('STD_NM', 'desc'); };
+        if (ROLLNO) { query = ref.where('ROLLNO', '>=', ROLLNO);query = query.orderBy('ROLLNO', 'desc'); };
+        return query;
+      }).valueChanges()
+    );
+}
+
+//function to retrieve collection documents for products page
+getProducts(coll: string, filters?: any){
+  this.itemsCollection = this.afs.collection<any>('product');
+  return this.itemsCollection.valueChanges();
+
+}
   getCollectionUrl(filter) {
     // return "onlinestore/dstech/"+filter;
     return this.fireservices.collection('products').snapshotChanges() + filter;
@@ -215,65 +224,61 @@ deleteOneProduct(  record_id)
   //     }
   //   );
   // }
-  getDocs(coll: string, filters?: any) {
-    this.itemsCollection = this.afs.collection<any>(this.getCollectionUrl(coll));
-    return this.itemsCollection.valueChanges();
-  }
-  getDocsa(coll: string, filters?: any) {
-    if (filters) {
-      if (filters.name > "") {
-        return this.afs.collection(coll, ref =>
-          ref.where('name', '>=', filters.name)
-            .where('delete_flag', '==', 'N')
-            .orderBy('name', 'desc')
-        ).valueChanges();
+  // getDocs(coll: string, filters?: any) {
+  //   this.itemsCollection = this.afs.collection<any>(this.getCollectionUrl(coll));
+  //   return this.itemsCollection.valueChanges();
+  // }
+  // getDocsa(coll: string, filters?: any) {
+  //   if (filters) {
+  //     if (filters.name > "") {
+  //       return this.afs.collection(coll, ref =>
+  //         ref.where('name', '>=', filters.name)
+  //           .where('delete_flag', '==', 'N')
+  //           .orderBy('name', 'desc')
+  //       ).valueChanges();
 
-      }
-      if (filters.category > "") {
-        return this.afs.collection(coll, ref =>
-          ref.where('category', '>=', filters.category)
-            .where('delete_flag', '==', 'N')
-            .orderBy('category', 'desc')
-        ).valueChanges();
+  //     }
+  //     if (filters.category > "") {
+  //       return this.afs.collection(coll, ref =>
+  //         ref.where('category', '>=', filters.category)
+  //           .where('delete_flag', '==', 'N')
+  //           .orderBy('category', 'desc')
+  //       ).valueChanges();
 
-      } else {
-        let fromDt = new Date(filters.fromdt);
-        let toDt = new Date(filters.todt);
-        return this.afs.collection(coll, ref =>
-          ref.where('updatedAt', '>=', fromDt)
-            .where('updatedAt', '<', toDt)
-            .where('delete_flag', '==', 'N')
-            .orderBy('updatedAt', 'desc')
-        ).valueChanges();
+  //     } else {
+  //       let fromDt = new Date(filters.fromdt);
+  //       let toDt = new Date(filters.todt);
+  //       return this.afs.collection(coll, ref =>
+  //         ref.where('updatedAt', '>=', fromDt)
+  //           .where('updatedAt', '<', toDt)
+  //           .where('delete_flag', '==', 'N')
+  //           .orderBy('updatedAt', 'desc')
+  //       ).valueChanges();
 
-      }
-    } else {
-      return this.afs.collection(coll, ref =>
-        ref.where('delete_flag', '==', 'N')
-          .orderBy('name')
-          .orderBy('updatedAt', "desc"))
-        .valueChanges();
+  //     }
+  //   } else {
+  //     return this.afs.collection(coll, ref =>
+  //       ref.where('delete_flag', '==', 'N')
+  //         .orderBy('name')
+  //         .orderBy('updatedAt', "desc"))
+  //       .valueChanges();
 
-    }
-  }
-  getProduct(coll: string, docId: string) {
-    coll = this._eStoreColl + "/" + localStorage.getItem('center') + "/" + coll;
-    return this.getDoc(coll, docId);
-  }
+  //   }
+  // }
+  
+ 
+  //orderby requires firebase indexing
   // getProducts(coll: string) {
-  //   return this.afs.collection(this.getCollectionUrl(coll), ref =>
+  //   return this.afs.collection('product', ref =>
   //     ref.where('delete_flag', '==', 'N')
   //       .orderBy('name', 'desc')
   //   ).valueChanges();
 
   // }
-  getProducts(coll: string, filters?: any){
-    this.itemsCollection = this.afs.collection<any>(this.getCollectionUrl(coll));
-    return this.itemsCollection.valueChanges();
-
-  }
+  
+  
   getFilterProducts(coll: string, filters) {
-    return this.afs.collection(this.getCollectionUrl(coll), ref =>
+    return this.afs.collection("product", ref =>
       ref.where('delete_flag', '==', 'N')
         .where('tags', 'array-contains', filters)
         .orderBy('tags', 'desc')
@@ -283,6 +288,11 @@ deleteOneProduct(  record_id)
 
 
   //UPDATE
+
+  //function to update a record
+  updateProduct(coll, formData) {
+    return this.updateDoc("product", formData._id, formData);
+  }
   updateDoc(coll: string, docId: string, data: any) {
     const timestamp = this.timestamp
     var docRef = this.afs.collection(coll).doc(docId);
@@ -294,34 +304,22 @@ deleteOneProduct(  record_id)
       useremail: this.authState.email
     });
   }
-  updateProduct(coll, formData) {
-    return this.updateDoc(this.getCollectionUrl(coll), formData._id, formData);
-  }
+  
 
 
   //DELETE
-  deleteProduct(coll, docId) {
-    return this.deleteDoc(this.getCollectionUrl(coll), docId);
+
+  deleteOneProduct(  record_id)
+  {
+    this.fireservices.doc('product/' + record_id).delete();
   }
 
-  deleteDoc(coll: string, docId: string) {
-    const timestamp = this.timestamp
-    var docRef = this.afs.collection(coll).doc(docId);
-    return docRef.update({
-      updatedAt: timestamp,
-      delete_flag: "Y",
-      username: this.authState.displayName,
-      useremail: this.authState.email
-    });
-  }
-
-  //delete the row pic
-  deleteProductPic(coll, docId?) {
-    coll = this._eStoreColl + "/" + localStorage.getItem('center') + "/" + coll;
-    var docRef = this.afs.collection(coll).doc(docId);
-    return docRef.set({
-      path: null
-    }, { merge: true });
+  //the function to delete the picture of a single document
+  deleteProductPic(  record_id)
+  {
+    this.fireservices.doc('product/' + record_id).set({
+      path:null
+    }, {merge: true});
   }
 
   //CRUD ENDS

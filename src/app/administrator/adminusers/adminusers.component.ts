@@ -108,7 +108,7 @@ export class AdminusersComponent implements OnInit {
   }
   deleteProductPic(docId){
     if (confirm("Are you sure want to delete this picture ?")) {
-    this._backendService.deleteProductPic('product',docId);
+    this._backendService.deleteProductPic(docId);
     }
 }
 //another

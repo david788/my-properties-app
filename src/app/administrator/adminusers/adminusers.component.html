@@ -1,16 +1,3 @@
-<!-- <button (click) = "add()">ADD</button>
-
-<div *ngFor ="let item of items">
-    {{item.category}}
-    <button (click) = "update(item)">UpDate</button>
-    <button (click) = "delete(item)">Delete</button>
-
-
-
-</div> -->
-
-
-
 <div class="container">
 
     <div class="form-group">
@@ -22,32 +9,8 @@
     <div class="form-group">
         <input type="text" class="form-control" [(ngModel)]="employeeAddress" placeholder="Enter Employee Address">
     </div>
-    
-    <!-- pic -->
-    <!-- <button mat-icon-button matTooltip="Show Picture" 
-        (click)=" this.showHostSelfie=true;">
-        <mat-icon color="primary">photo_camera</mat-icon>
-    </button> -->
 
-    <!-- <button mat-icon-button matTooltip="Take Picture" (click)=" this.takeHostSelfie=true;"
-        class="label-error"  >
-        <mat-icon color = "primary">photo_camera</mat-icon>
-    </button>
-    <div *ngIf="takeHostSelfie" width="300">
-        <button type="reset" (click)="takeHostSelfie=false;" mat-icon-button color="primary">
-            <mat-icon>clear</mat-icon>
-        </button>
-        <br>
-        <fileupload fileUrl="product" docId="{{this.myDocId}}"></fileupload>
-    </div>
-    <div *ngIf="showHostSelfie" width="300">
-        <button type="reset" (click)="showHostSelfie=false;" mat-icon-button color="primary">
-            <mat-icon>clear</mat-icon>
-        </button>
-        <br>
-        <img [src]="profileUrl | async" width="300" height="300" />
-        <br>
-    </div> -->
+
     <div class="form-group">
         <button class="btn btn-primary" (click)="CreateRecord()" color="primary" mat-raised-button
             [disabled]="!employeeName || !employeeAge || !employeeAddress">Create Employee</button>

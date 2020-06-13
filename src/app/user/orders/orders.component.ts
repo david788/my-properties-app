@@ -77,13 +77,13 @@ export class OrdersComponent implements OnInit {
   }
   deleteProductPic(docId){
     if (confirm("Are you sure want to delete this picture ?")) {
-    this._dataService.deleteProductPic('product',docId);
+    this._dataService.deleteProductPic(docId);
     }
     
 }
 getDoc(docId) {
   this.dataLoading = true;
-  this.querySubscription = this._dataService.getProduct('product', docId)
+  this.querySubscription = this._dataService.getProduct( docId)
     .subscribe(res => {
       if (res) {
         this.myDocData = res;
