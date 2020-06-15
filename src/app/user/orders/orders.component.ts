@@ -100,23 +100,12 @@ getDoc(docId) {
       () => { this.error = false; this.dataLoading = false; }
     );
 }
-deleteDoc(docId) {
+
+deleteDoc(record_id) {
   if (confirm("Are you sure you want to delete this record ?")) {
     this.dataLoading = true;
-    this.querySubscription = this._dataService.delOneProductId('product', docId)
-      .subscribe(res => {
-        if (res) {
-          this.myDocData = res;
-          // this.toggle('searchMode');
-          this.dataLoading=false;
-        }
-      }, (error) => {
-        this.error = true;
-        this.errorMessage = error.message;
-        this.dataLoading = false;
-      },
-        () => { this.error = false; this.dataLoading = false; }
-      );
+    this._dataService.deleteOneProduct(record_id);
+    this.dataLoading = false;
   }
 }
 

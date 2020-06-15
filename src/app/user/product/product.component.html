@@ -20,9 +20,8 @@
        
         <mat-list>
             <mat-list-item *ngFor="let item of members | async" (click)="showDetails(item);toggle=!toggle">
-                <!-- <mat-list-item *ngFor="let item of members" (click)=" showDetails(item);toggle=!toggle"> -->
 
-                <h6 mat-line>{{item.name}}
+                <h6 mat-line >{{item.name}}
                     <span class="small-spacer"></span>
                     <mat-icon mat-list-icon>pageview</mat-icon>
                 </h6>
@@ -43,7 +42,7 @@
         <mat-error *ngIf="savedChanges">
             <br />
             <br /> Shopping cart is updated.
-            <p>Shopping cart is updated</p>
+           
             <mat-icon (click)="savedChanges=!savedChanges" color="primary">close</mat-icon>
             <span class="med-spacer"></span>
             <br />
@@ -56,8 +55,7 @@
         <button [disabled]="counter < 1" mat-raised-button color="primary" (click)="addToCart(myDocData, counter)">Add
             to Cart</button>
         <br />
-        <!-- <img [src]="profileUrl | async" width="300" height="300" /> -->
-        <img [src]="profileUrl" width="300" height="300" />
+        <img [src]="profileUrl | async" width="300" height="300" />
 
     </ng-template>
 </mat-card>

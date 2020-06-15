@@ -31,7 +31,7 @@ export class SetproductComponent implements OnInit, OnDestroy {
   showHostSelfie = false;
   myDocId;
 
-  
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -84,21 +84,7 @@ export class SetproductComponent implements OnInit, OnDestroy {
       },
         () => { this.error = false; this.dataLoading = false; });
   }
-  getDataa() {
-    this.dataLoading = true;
-    //was setNewDoc
-    // this._backendService.getDocs('product').then((members) => {
-    //   this.members = members;
-    //   this.dataSource = new MatTableDataSource(members);
-    //   this.dataSource.paginator = this.paginator;
-    //   this.dataSource.sort = this.sort;
-    // }).catch(error => {
-    //     this.error = true;
-    //     this.errorMessage = error.message;
-    //     this.dataLoading = false;
-    // });
 
-  }
   getFilterData(filters) {
     this.dataLoading = true;
     this.querySubscription = this._backendService.getFilterProducts('product', filters)
@@ -116,29 +102,14 @@ export class SetproductComponent implements OnInit, OnDestroy {
       },
         () => { this.error = false; this.dataLoading = false; });
   }
-  // setData(formData) {
-  //   this.dataLoading = true;
-  //   this.querySubscription = this._backendService.setDocs('product', formData)
-  //     .subscribe(members => {
-  //       if (members) {
-  //         this.savedChanges = true;
-  //         this.dataLoading=false;
 
-  //       }
-  //     }, (error) => {
-  //       this.error = true;
-  //       this.errorMessage = error.message;
-  //       this.dataLoading = false;
-  //     },
-  //       () => { this.error = false; this.dataLoading = false; }
-  //     );
-  // }
   setData(formData) {
     this.dataLoading = true;
     //was setNewDoc
     this._backendService.setNewDoc('product', formData).then((res) => {
-      this.savedChanges = true;
       this.dataLoading = false;
+
+      this.savedChanges = true;
     }).catch(error => {
       this.error = true;
       this.errorMessage = error.message;
@@ -169,12 +140,12 @@ export class SetproductComponent implements OnInit, OnDestroy {
   }
   deleteProductPic(docId) {
     if (confirm("Are you sure want to delete this picture ?")) {
-      this._backendService.deleteProductPic( docId);
+      this._backendService.deleteProductPic(docId);
     }
   }
   getDoc(docId) {
     this.dataLoading = true;
-    this.querySubscription = this._backendService.getProduct( docId)
+    this.querySubscription = this._backendService.getProduct(docId)
       .subscribe(res => {
         if (res) {
           this.myDocData = res;

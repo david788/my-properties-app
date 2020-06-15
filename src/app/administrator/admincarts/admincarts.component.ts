@@ -137,7 +137,7 @@ export class AdmincartsComponent implements OnInit, OnDestroy {
   deleteProductPic(docId) { }
   getDoc(docId) {
     this.dataLoading = true;
-    this.querySubscription = this._backendService.getOneProductId('cart', docId)
+    this.querySubscription = this._backendService.getDoc( docId)
       .subscribe(res => {
         if (res) {
           this.myDocData = res;
@@ -154,23 +154,12 @@ export class AdmincartsComponent implements OnInit, OnDestroy {
         () => { this.error = false; this.dataLoading = false; }
       );
   }
-  deleteDoc(docId) {
+  
+  deleteDoc(record_id) {
     if (confirm("Are you sure you want to delete this record ?")) {
       this.dataLoading = true;
-      this.querySubscription = this._backendService.delOneProductId('cart', docId)
-        .subscribe(res => {
-          if (res) {
-            this.myDocData = res;
-            this.toggle('searchMode');
-            this.dataLoading=false;
-          }
-        }, (error) => {
-          this.error = true;
-          this.errorMessage = error.message;
-          this.dataLoading = false;
-        },
-          () => { this.error = false; this.dataLoading = false; }
-        );
+      this._backendService.deleteOneProduct(record_id);
+      this.dataLoading = false;
     }
   }
   ngAfterViewInit() { }

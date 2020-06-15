@@ -39,50 +39,9 @@ export class ProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.getData();
-    // this.db.collection('product').snapshotChanges().subscribe(
 
-    //   serverItems => {
-    //     this.items = [];
-    //     serverItems.forEach(a => {
-    //       let item: any = a.payload.doc.data();
-    //       item.id = a.payload.doc.id;
-    //       this.items.push(item);
-    //     });
-    //   }
-    // );
-
-    // this.crudservice.getProductsNew().subscribe(data => {
-
-    //   this.products = data.map(e => {
-    //     return {
-    //       id: e.payload.doc.id,
-    //       isedit: false,
-    //       category: e.payload.doc.data()['category'],
-    //       scategory: e.payload.doc.data()['scategory'],
-    //       name: e.payload.doc.data()['name'],
-    //       sname: e.payload.doc.data()['sname'],
-
-    //       lname: e.payload.doc.data()['lname'],
-
-    //       descr: e.payload.doc.data()['descr'],
-
-    //       color: e.payload.doc.data()['color'],
-
-    //       size: e.payload.doc.data()['size'],
-    //       price: e.payload.doc.data()['price'],
-
-    //       shipping: e.payload.doc.data()['shipping'],
-
-    //       discount: e.payload.doc.data()['discount'],
-
-
-    //     };
-    //   })
-    //   console.log(this.products);
-
-    // });
   }
-
+  //load products from firestore
   getData() {
     this.members = this._backendService.getProducts('product');
   }
@@ -104,21 +63,24 @@ export class ProductComponent implements OnInit {
       this.dataLoading = false;
     });
   }
+  //show the product pic
   getPic(picId) {
     const ref = this._storage.ref(picId);
     this.profileUrl = ref.getDownloadURL();
   }
+  //show all the details for the selected product
   showDetails(item) {
     this.counter = 0;
     this.myDocData = item;
     this.getPic(item.path);
-    // capture user interest event, user has looked into product details
+    // capture user interest event, user has looked into product details, thus has shown an interest to it
     this.dataLoading = true;
     let data = item;
     return this._backendService.updateShoppingInterest('interests', data).then((success) => {
       this.dataLoading = false;
     });
   }
+  //counter function for the quantity 
   countProd(filter) {
     if (filter == "add") {
       this.counter = this.counter + 1;
@@ -128,6 +90,8 @@ export class ProductComponent implements OnInit {
       }
     }
   }
+
+  //add the item to the cart
   addToCart(item, counter) {
     this.dataLoading = true;
     let data = item;
@@ -143,105 +107,5 @@ export class ProductComponent implements OnInit {
       this.querySubscription.unsubscribe();
     }
   }
-  // getData() {
-  //   this.dataLoading = true;
-  //   this.querySubscription = this._backendService.getProducts('product')
-  //     .subscribe(members => {
-  //       this.members = members;
 
-  //       this.dataLoading = false;
-
-  //     }, (error) => {
-  //       this.error = true;
-  //       this.errorMessage = error.message;
-  //       this.dataLoading = false;
-  //     },
-  //       () => { this.error = false; this.dataLoading = false; });
-  // }
-  // getFilterData(filters) {
-  //   this.dataLoading = true;
-  //   this.querySubscription = this._backendService.getFilterProducts('product', filters)
-  //     .subscribe(members => {
-  //       this.members = members;
-  //       this.dataLoading = false;
-
-  //     }, (error) => {
-  //       this.error = true;
-  //       this.errorMessage = error.message;
-  //       this.dataLoading = false;
-  //     },
-  //       () => { this.error = false; this.dataLoading = false; });
-  // }
-  // getPic(picId) {
-  //   this.profileUrl = "";
-  // }
-  // showDetails(item) {
-  //   this.counter = 0;
-  //   this.myDocData = item;
-  //   this.getPic(item.path);
-  //   // capture user interest event, user has looked into product details
-  //   this.dataLoading = true;
-  //   let data = item;
-  //   this.querySubscription = this._backendService.updateShoppingInterest('interests', data)
-  //     .subscribe(members => {
-  //       this.members = members;
-  //       this.dataLoading = false;
-
-  //     }, (error) => {
-  //       this.error = true;
-  //       this.errorMessage = error.message;
-  //       this.dataLoading = false;
-  //     },
-  //       () => { this.error = false; this.dataLoading = false; });
-
-  // }
-  // addToCart(item, counter) {
-  //   this.dataLoading = true;
-  //   let data = item;
-  //   data.qty = counter;
-  //   this.querySubscription = this._backendService.updateShoppingCart('cart', data)
-  //     .subscribe(members => {
-  //       this.members = members;
-  //       this.dataLoading = false;
-
-  //     }, (error) => {
-  //       this.error = true;
-  //       this.errorMessage = error.message;
-  //       this.dataLoading = false;
-  //     },
-  //       () => { this.error = false; this.dataLoading = false; });
-
-  // }
-
-  // countProd(filter) {
-  //   if (filter == "add") {
-  //     this.counter = this.counter + 1;
-  //   } else {
-  //     if (this.counter > 0) {
-  //       this.counter = this.counter - 1;
-  //     }
-  //   }
-  // }
-
-  // addToCart(item, counter) {
-  //   this.dataLoading = true;
-  //   let data = item;
-  //   data.qty = counter;
-  //   return this._backendService.updateShoppingCart('cart', data).then((success) => {
-  //     this.dataLoading = false;
-  //     this.counter = 0;
-  //     this.savedChanges = true;
-  //   });
-  // }
-  // showDetails(item) {
-  //   this.counter = 0;
-  //   this.myDocData = item;
-  //   this.getPic(item.path);
-  //   // capture user interest event, user has looked into product details
-  //   this.dataLoading = true;
-  //   let data = item;
-  //   return this._backendService.updateShoppingInterest('interests', data).then((success) => {
-  //     this.dataLoading = false;
-  //   });
-  // }
 }

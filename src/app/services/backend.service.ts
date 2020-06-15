@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject , } from 'rxjs/Rx';
+import { Observable, BehaviorSubject, } from 'rxjs/Rx';
 import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase/app';
 import { switchMap, take } from 'rxjs/operators';
@@ -28,52 +28,48 @@ export class BackendService {
 
   // items = [];
   items$: Observable<Item[]>;
-  nameFilter$: BehaviorSubject<string|null>;
-  rollNoFilter$: BehaviorSubject<string|null>;
+  nameFilter$: BehaviorSubject<string | null>;
+  rollNoFilter$: BehaviorSubject<string | null>;
   private _firebaseCollURL = "product";
   items: Observable<any>;
 
- 
-  constructor(public afAuth: AngularFireAuth, private afs: AngularFirestore, public fireservices:AngularFirestore) {
+
+  constructor(public afAuth: AngularFireAuth, private afs: AngularFirestore, public fireservices: AngularFirestore) {
     this.afAuth.authState.subscribe(authState => {
       this.authState = authState;
     });
   }
   //amit new
-  
 
-getDocsByName(STD_NM: string|null) {
-  this.nameFilter$.next(STD_NM); 
-  return this.items$
-}
-getDocsByRollNo(ROLLNO: string|null) {
-  this.rollNoFilter$.next(ROLLNO); 
-  return this.items$
-}
+
+  getDocsByName(STD_NM: string | null) {
+    this.nameFilter$.next(STD_NM);
+    return this.items$
+  }
+  getDocsByRollNo(ROLLNO: string | null) {
+    this.rollNoFilter$.next(ROLLNO);
+    return this.items$
+  }
 
   //end
 
-  create_Newemployee(Record)
-  {
+  create_Newemployee(Record) {
     return this.fireservices.collection('Employee').add(Record);
   }
 
-  get_Allemployee()
-  {
+  get_Allemployee() {
     return this.fireservices.collection('Employee').snapshotChanges();
   }
-  getProductsNew(){
+  getProductsNew() {
     return this.fireservices.collection('product').snapshotChanges();
 
   }
 
-  update_employee(recordid, record)
-  {
+  update_employee(recordid, record) {
     this.fireservices.doc('Employee/' + recordid).update(record);
   }
 
-  delete_employee(record_id)
-  {
+  delete_employee(record_id) {
     this.fireservices.doc('Employee/' + record_id).delete();
   }
 
@@ -130,7 +126,7 @@ getDocsByRollNo(ROLLNO: string|null) {
   //   this.itemDoc = this.afs.doc<any>(collUrl);
   //   return this.itemDoc.valueChanges();
   // }
-  
+
 
   get timestamp() {
     var d = new Date();
@@ -144,8 +140,8 @@ getDocsByRollNo(ROLLNO: string|null) {
   setProduct(coll: string, formData: any, docId?: string) {
     // coll = this._eStoreColl + "/" + localStorage.getItem('center') + "/" + coll;
     return this.setNewDoc(coll, formData);
-}
-   setNewDoc(coll: string, data: any, docId?: any) {
+  }
+  setNewDoc(coll: string, data: any, docId?: any) {
     const id = this.afs.createId();
     const item = { id, name };
     const timestamp = this.timestamp
@@ -161,7 +157,7 @@ getDocsByRollNo(ROLLNO: string|null) {
       useremail: this.authState.email
     });
   }
- //the function to upload a pic for a single document
+  //the function to upload a pic for a single document
   setProductPic(filePath, coll, docId?) {
     var docRef = this.afs.collection('product').doc(docId);
     return docRef.set({
@@ -172,10 +168,10 @@ getDocsByRollNo(ROLLNO: string|null) {
   //READ
 
   //function to get a single document
-  getProduct( docId: string) {
+  getProduct(docId: string) {
     return this.getDoc(docId);
   }
-  getDoc( docId: string) {
+  getDoc(docId: string) {
     return this.afs.collection('product').doc(docId).valueChanges();
   }
   //function to get collection documents and display on a table
@@ -188,27 +184,43 @@ getDocsByRollNo(ROLLNO: string|null) {
       this.rollNoFilter$
     ).switchMap(
       ([STD_NM, ROLLNO]) =>
-      this.afs.collection<Item>(this._firebaseCollURL, ref => {
-        let query = ref.where('delete_flag', '==', 'N');
-        if (STD_NM) { query = ref.where('STD_NM', '>=', STD_NM);query = query.orderBy('STD_NM', 'desc'); };
-        if (ROLLNO) { query = ref.where('ROLLNO', '>=', ROLLNO);query = query.orderBy('ROLLNO', 'desc'); };
-        return query;
-      }).valueChanges()
+        this.afs.collection<Item>(this._firebaseCollURL, ref => {
+          let query = ref.where('delete_flag', '==', 'N');
+          if (STD_NM) { query = ref.where('STD_NM', '>=', STD_NM); query = query.orderBy('STD_NM', 'desc'); };
+          if (ROLLNO) { query = ref.where('ROLLNO', '>=', ROLLNO); query = query.orderBy('ROLLNO', 'desc'); };
+          return query;
+        }).valueChanges()
     );
-}
+  }
 
-//function to retrieve collection documents for products page
-getProducts(coll: string, filters?: any){
-  this.itemsCollection = this.afs.collection<any>('product');
-  return this.itemsCollection.valueChanges();
+  //function to retrieve collection documents for products page
+  getProducts(coll: string, filters?: any) {
+    this.itemsCollection = this.afs.collection<any>('product');
+    return this.itemsCollection.valueChanges();
 
-}
+  }
+
+  //get orders for a specific user
+  getCart(coll: string) {
+    return this.afs.collection('orders', ref =>
+      ref.where('delete_flag', '==', 'N')
+        .where('author', '==', this.authState.uid)
+        .orderBy('name', 'desc')
+    ).valueChanges();
+    // .snapshotChanges().map(actions => {
+    //     return actions.map(a => {
+    //         const data = a.payload.doc.data();
+    //         const id = a.payload.doc.id;
+    //         return { id, ...data };
+    //     });
+    // });
+  }
   getCollectionUrl(filter) {
     // return "onlinestore/dstech/"+filter;
     return this.fireservices.collection('products').snapshotChanges() + filter;
 
     // return "/products/" + filter;
-   
+
 
   }
   // getCollectionURL(filter){
@@ -224,10 +236,7 @@ getProducts(coll: string, filters?: any){
   //     }
   //   );
   // }
-  // getDocs(coll: string, filters?: any) {
-  //   this.itemsCollection = this.afs.collection<any>(this.getCollectionUrl(coll));
-  //   return this.itemsCollection.valueChanges();
-  // }
+
   // getDocsa(coll: string, filters?: any) {
   //   if (filters) {
   //     if (filters.name > "") {
@@ -265,8 +274,8 @@ getProducts(coll: string, filters?: any){
 
   //   }
   // }
-  
- 
+
+
   //orderby requires firebase indexing
   // getProducts(coll: string) {
   //   return this.afs.collection('product', ref =>
@@ -275,8 +284,8 @@ getProducts(coll: string, filters?: any){
   //   ).valueChanges();
 
   // }
-  
-  
+
+
   getFilterProducts(coll: string, filters) {
     return this.afs.collection("product", ref =>
       ref.where('delete_flag', '==', 'N')
@@ -304,31 +313,13 @@ getProducts(coll: string, filters?: any){
       useremail: this.authState.email
     });
   }
-  
 
-
-  //DELETE
-
-  deleteOneProduct(  record_id)
-  {
-    this.fireservices.doc('product/' + record_id).delete();
-  }
-
-  //the function to delete the picture of a single document
-  deleteProductPic(  record_id)
-  {
-    this.fireservices.doc('product/' + record_id).set({
-      path:null
-    }, {merge: true});
-  }
-
-  //CRUD ENDS
-
+  //place the order
   updateShoppingCart(coll: string, data) {
     const id = this.afs.createId();
     const item = { id, name };
     const timestamp = this.timestamp
-    var docRef = this.afs.collection(this.getCollectionUrl(coll)).doc(item.id);
+    var docRef = this.afs.collection('orders').doc(item.id);
     return docRef.set({
       ...data,
       //author: this.afAuth.currentUser.uid,
@@ -347,11 +338,12 @@ getProducts(coll: string, filters?: any){
     });
   }
 
+  //store interests to firestore
   updateShoppingInterest(coll: string, data) {
     const id = this.afs.createId();
     const item = { id, name };
     const timestamp = this.timestamp
-    var docRef = this.afs.collection(this.getCollectionUrl(coll)).doc(item.id);
+    var docRef = this.afs.collection('interests').doc(item.id);
     return docRef.set({
       ...data,
       author: this.authState.uid,
@@ -364,123 +356,20 @@ getProducts(coll: string, filters?: any){
       delete_flag: "N",
     });
   }
-  getCart(coll: string) {
-    return this.afs.collection(this.getCollectionUrl(coll), ref =>
-      ref.where('delete_flag', '==', 'N')
-        .where('author', '==', this.authState.uid)
-        .orderBy('name', 'desc')
-    ).valueChanges();
-    // .snapshotChanges().map(actions => {
-    //     return actions.map(a => {
-    //         const data = a.payload.doc.data();
-    //         const id = a.payload.doc.id;
-    //         return { id, ...data };
-    //     });
-    // });
-  }
 
 
-  //fake functions
-  getProductsa(collType) {
-    let fakeresponse = [{
-      'category': "test",
-      'scategory': "Tesm",
-      'name': "Shirt",
-      'price': "\$32",
-      '_id': "123",
+  //DELETE
 
-    }];
-    return Observable.create(
-      observer => {
-        setTimeout(() => {
-          observer.next(fakeresponse)
-        }, 2000)
-      }
-    )
-  }
-  getFilterProductsa(collType, filters) {
-    let fakeresponse = [{
-      'category': "test",
-      'scategory': "Team",
-      'name': "Shirt",
-      'price': "\$32",
-      '_id': "123",
-
-    }];
-    return Observable.create(
-      observer => {
-        setTimeout(() => {
-          observer.next(fakeresponse)
-        }, 2000)
-      }
-    )
-  }
-  // setProducts(collType, products) {
-  //   let fakeresponse = true;
-  //   return Observable.create(
-  //     observer => {
-  //       setTimeout(() => {
-  //         observer.next(fakeresponse)
-  //       }, 2000)
-  //     }
-  //   )
-  // }
-  updateProductsa(collType, products) {
-    let fakeresponse = true;
-    return Observable.create(
-      observer => {
-        setTimeout(() => {
-          observer.next(fakeresponse)
-        }, 2000)
-      }
-    )
-  }
-  getOneProductId(collType, docId) {
-    let fakeresponse = {
-      'category': "test",
-      'scategory': "Team",
-      'name': "Shirt",
-      'price': "\$32",
-      '_id': "123",
-
-    };
-    return Observable.create(
-      observer => {
-        setTimeout(() => {
-          observer.next(fakeresponse)
-        }, 2000)
-      }
-    )
-  }
-  delOneProductId(collType, docId) {
-    let fakeresponse = true;
-    return Observable.create(
-      observer => {
-        setTimeout(() => {
-          observer.next(fakeresponse)
-        }, 2000)
-      }
-    )
-  }
-  updateShoppingInteresta(collType, data) {
-    let fakeresponse = true;
-    return Observable.create(
-      observer => {
-        setTimeout(() => {
-          observer.next(fakeresponse)
-        }, 2000)
-      }
-    )
-  }
-  updateShoppingCarta(collType, data) {
-    let fakeresponse = true;
-    return Observable.create(
-      observer => {
-        setTimeout(() => {
-          observer.next(fakeresponse)
-        }, 2000)
-      }
-    )
+  deleteOneProduct(record_id) {
+    this.fireservices.doc('product/' + record_id).delete();
   }
 
+  //the function to delete the picture of a single document
+  deleteProductPic(record_id) {
+    this.fireservices.doc('product/' + record_id).set({
+      path: null
+    }, { merge: true });
+  }
+
+  //CRUD ENDS
 }

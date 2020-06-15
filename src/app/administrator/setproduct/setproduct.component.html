@@ -134,7 +134,7 @@
             <mat-progress-bar mode="indeterminate" *ngIf="dataLoading"></mat-progress-bar>
             <mat-error *ngIf="error">Error: {{ errorMessage }}</mat-error>
             <mat-card-actions align="start">
-                <button type="submit" mat-raised-button
+                <button type="submit" mat-raised-button [disabled]
                     ="this.editDataForm.valid || this.editDataForm.pristine" color="primary" >Update</button>
                 <span class="med-spacer"></span>
                 <span matTooltip="Search">
@@ -144,6 +144,7 @@
                 <span matTooltip="Shwo Recent Results">
                     <mat-icon color="primary" (click)="toggle('resMode');getData();">cached</mat-icon>
                 </span>
+               
             </mat-card-actions>
             <mat-form-field>
                 <input matInput placeholder="Category" name="category" id="category" [ngModel]="myDocData.category"
