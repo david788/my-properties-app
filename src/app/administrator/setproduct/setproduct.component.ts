@@ -47,6 +47,12 @@ export class SetproductComponent implements OnInit, OnDestroy {
     this.currentDate7 = new Date();
     this.currentDate7.setDate(this.currentDate.getDate() - 7);
   }
+  toggle(filter?) {
+    if (!filter) { filter = "searchMode" }
+    else { filter = filter; }
+    this.toggleField = filter;
+  }
+
   /**
    * Set the paginator and sort after the view init since this component will
    * be able to query its view for the initialized paginator and sort.
@@ -61,11 +67,7 @@ export class SetproductComponent implements OnInit, OnDestroy {
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
-  toggle(filter?) {
-    if (!filter) { filter = "searchMode" }
-    else { filter = filter; }
-    this.toggleField = filter;
-  }
+  
   //fetch data from firebase database
   getData() {
     this.dataLoading = true;

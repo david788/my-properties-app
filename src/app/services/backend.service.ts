@@ -33,6 +33,9 @@ export class BackendService {
   private _firebaseCollURL = "product";
   items: Observable<any>;
 
+  private _userAuthColl: string = "userauth";
+
+
 
   constructor(public afAuth: AngularFireAuth, private afs: AngularFirestore, public fireservices: AngularFirestore) {
     this.afAuth.authState.subscribe(authState => {
@@ -97,6 +100,11 @@ export class BackendService {
   //logout function  called here
   logout() {
     //  return this.auth.signOut();
+    window.localStorage.removeItem("displayName");
+    window.localStorage.removeItem("email");
+    window.localStorage.removeItem("picture");
+    window.localStorage.removeItem("center");
+    window.localStorage.removeItem("token");
     return this.afAuth.signOut();
   }
   //this checks whether user is logged in or not
@@ -126,12 +134,40 @@ export class BackendService {
   //   this.itemDoc = this.afs.doc<any>(collUrl);
   //   return this.itemDoc.valueChanges();
   // }
+  setExistingDoc(coll: string, docId: string, data: any) {
+    const timestamp = this.timestamp
+    var docRef = this.afs.collection(coll).doc(docId);
+    return docRef.set(({
+        ...data,
+        updatedAt: timestamp,
+        createdAt: timestamp,
+        delete_flag: "N"
+    }), { merge: true });
+}
+
+  // this method is used when user logs in first time
+  setUserAuth(uid, uname, phoneNumber, email, photoURL) {
+    let data =
+        {
+            'authuid': uid,
+            'authuname': uname,
+            'authphoneNumber': phoneNumber,
+            'authemail': email,
+            'authphoto': photoURL
+        };
+    this.setExistingDoc(this._userAuthColl, uid, data);
+}
 
 
   get timestamp() {
     var d = new Date();
     return d;
   }
+  timestampMinusDays(filter) {
+    var d = new Date();
+    d.setDate(d.getDate() - filter);
+    return d;
+}
 
   //CRUD starts here
   //set new  product  function to database
@@ -194,11 +230,11 @@ export class BackendService {
   }
 
   //function to retrieve collection documents for products page
-  getProducts(coll: string, filters?: any) {
-    this.itemsCollection = this.afs.collection<any>('product');
-    return this.itemsCollection.valueChanges();
+  // getProducts(coll: string, filters?: any) {
+  //   this.itemsCollection = this.afs.collection<any>('product');
+  //   return this.itemsCollection.valueChanges();
 
-  }
+  // }
 
   //get orders for a specific user
   getCart(coll: string) {
@@ -236,6 +272,8 @@ export class BackendService {
   //     }
   //   );
   // }
+
+  
 
   // getDocsa(coll: string, filters?: any) {
   //   if (filters) {
@@ -277,23 +315,42 @@ export class BackendService {
 
 
   //orderby requires firebase indexing
-  // getProducts(coll: string) {
-  //   return this.afs.collection('product', ref =>
-  //     ref.where('delete_flag', '==', 'N')
-  //       .orderBy('name', 'desc')
-  //   ).valueChanges();
+  getProducts(coll: string) {
+    return this.afs.collection('product', ref =>
+      ref.where('delete_flag', '==', 'N').limit(5)
+      
+        
+    ).valueChanges();
 
-  // }
+  }
 
 
   getFilterProducts(coll: string, filters) {
     return this.afs.collection("product", ref =>
       ref.where('delete_flag', '==', 'N')
         .where('tags', 'array-contains', filters)
-        .orderBy('tags', 'desc')
+        .orderBy('name', 'desc').limit(5)
+        
     ).valueChanges();
 
   }
+  // getProducts(coll: string) {
+  //   return this.afs.collection(this.getCollectionURL(coll), ref =>
+  //       ref.where('delete_flag', '==', 'N')
+  //           .orderBy('name', 'desc')
+  //   ).valueChanges();
+    // return this.afs.collection(this.getCollectionURL(coll), ref =>
+    //     ref.where('delete_flag', '==', 'N')
+    //         .orderBy('name', 'desc')
+    // )
+    //     .snapshotChanges().map(actions => {
+    //         return actions.map(a => {
+    //             const data = a.payload.doc.data();
+    //             const id = a.payload.doc.id;
+    //             return { id, ...data };
+    //         });
+    //     });
+// }
 
 
   //UPDATE
@@ -360,8 +417,14 @@ export class BackendService {
 
   //DELETE
 
+  // deleteOneProduct(record_id) {
+  //   this.fireservices.doc('product/' + record_id).delete();
+  // }
   deleteOneProduct(record_id) {
-    this.fireservices.doc('product/' + record_id).delete();
+    let data = {};
+    data["updatedAt"] = this.timestamp;
+    data["delete_flag"] = "Y"
+    this.fireservices.doc('product/' + record_id).update(data);
   }
 
   //the function to delete the picture of a single document
